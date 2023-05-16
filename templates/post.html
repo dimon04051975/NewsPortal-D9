@@ -1,0 +1,29 @@
+{% extends 'flatpages/default.html' %}
+{% load custom_filters %}
+{% load custom_filters %}
+
+<!-- Название у нас будет post -->
+{% block title %}
+Post
+{% endblock title %}
+
+<!-- В контенте на странице мы выводим все товары-->
+{% block content %}
+ <table> <!-- Начинаем описывать таблицу -->
+             <tr> <!-- Добавляем строку -->
+                 <td><h3> Заголовок:</h3></td>
+                 <td><h3> Дата и время поста:</h3></td>
+                 <td><h3> текст статьи/новости:</h3></td>
+             </tr>
+
+             <tr>
+                 <td>{{ post.header|censors }}</td>
+                 <td>{{ post.datetime_post }}</td>
+                 <td>{{ post.content|censors }}</td>
+             </tr>
+
+        </table> <!-- ... и таблицы -->
+
+
+
+{% endblock content %}

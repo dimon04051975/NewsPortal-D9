@@ -1,0 +1,63 @@
+{% extends 'flatpages/default.html' %}
+{% load i18n %}
+{% load custom_filters %}
+{% load custom_tags %}
+
+{% block title %}
+News
+{% endblock title %}
+
+{% block content %}
+   <h1>{% trans 'Список новостей' %}</h1>
+
+   <h4>{% trans 'Всего новостей' %} {{news|length}} </h4>
+
+    {% if is_not_subscriber %}
+        <p class="text-center"><a href="{% url 'subscribe' category.id %}" class="btn btn-secondary btn-sm">Подписаться</a></p>
+    {% endif %}
+
+   <hr>
+   <ul class="list_group list_group_flush">
+       {% for post in category_news_list %}
+           <li class="list_group_item">
+               <small class="fw-bold">{{ post.datetime_post|date:'d M Y' }}</small>
+               <a href="{% url 'post_detail' post.id %}">{{ post.header|censors }}</a>
+               <small class="text-muted">(автор: {{ post.author_name' }}</small><br>
+               <small class="fw-bold">категории:
+                   {% for category in post.category.all %}
+                   <a href="{% url 'category_list' category.id %}">{{ category }}</a>
+                   {% endfor %}
+               </small>
+               <p>{{ post.content|censors|truncatewords:20 }}</p>
+           </li>
+       {% endfor %}
+   </ul>
+    <form action="/subscribe/post/">
+        <input type="submit" value="{% trans 'Подписаться на новинки в категории' %}">
+    </form>
+
+
+
+   {# Информация о предыдущих страницах #}
+   {% if page_obj.has_previous %}
+       <a href="?{% url_replace page=1 %}">1</a>
+       {% if page_obj.previous_page_number != 1 %}
+           ...
+           <a href="?{% url_replace page=page_obj.previous_page_number %}">{{ page_obj.previous_page_number }}</a>
+       {% endif %}
+   {% endif %}
+
+   {# Информация о текущей странице #}
+   {{ page_obj.number }}
+
+   {# Информация о следующих страницах #}
+   {% if page_obj.has_next %}
+       <a href="?{% url_replace page=page_obj.next_page_number %}">{{ page_obj.next_page_number }}</a>
+       {% if paginator.num_pages != page_obj.next_page_number %}
+           ...
+           <a href="?{% url_replace page=page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }}</a>
+       {% endif %}
+   {% endif %}
+
+
+{% endblock content %}
